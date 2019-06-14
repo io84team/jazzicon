@@ -1,10 +1,10 @@
 {
-  "name": "jazzicon",
+  "name": "io84-jazzicon",
   "version": "2.0.0",
   "description": "A starter project using react-hyperscript and beefy with ES6.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
     "start": "beefy sample.js --live --open"
   },
   "author": "rushairer",
@@ -13,7 +13,10 @@
     "color": "^0.11.3",
     "mersenne-twister": "^1.1.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^4.34.0",
+    "webpack-cli": "^3.3.4"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/io84team/jazzicon.git"

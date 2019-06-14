@@ -1,5 +1,4 @@
 var MersenneTwister = require('mersenne-twister');
-var paperGen = require('./paper')
 var Color = require('color')
 var colors = require('./colors')
 var shapeCount = 4
@@ -8,26 +7,25 @@ var svgns = 'http://www.w3.org/2000/svg'
 module.exports = generateIdenticon
 
 var generator
+
 function generateIdenticon(diameter, seed) {
   generator = new MersenneTwister(seed);
   var remainingColors = hueShift(colors.slice(), generator)
 
-  var elements = paperGen(diameter, genColor(remainingColors))
-  var container = elements.container
+  var bgColor = genColor(remainingColors)
 
   var svg = document.createElementNS(svgns, 'svg')
   svg.setAttributeNS(null, 'x', '0')
   svg.setAttributeNS(null, 'y', '0')
   svg.setAttributeNS(null, 'width', diameter)
   svg.setAttributeNS(null, 'height', diameter)
+  svg.style.background = bgColor
 
-  container.appendChild(svg)
-
-  for(var i = 0; i < shapeCount - 1; i++) {
+  for (var i = 0; i < shapeCount - 1; i++) {
     genShape(remainingColors, diameter, i, shapeCount - 1, svg)
   }
 
-  return container
+  return `data:image/svg+xml;base64,${window.btoa(new XMLSerializer().serializeToString(svg))}`
 }
 
 function genShape(remainingColors, diameter, i, total, svg) {
@@ -46,7 +44,7 @@ function genShape(remainingColors, diameter, i, total, svg) {
   var tx = (Math.cos(angle) * velocity)
   var ty = (Math.sin(angle) * velocity)
 
-  var translate = 'translate(' + tx + ' ' +  ty + ')'
+  var translate = 'translate(' + tx + ' ' + ty + ')'
 
   // Third random is a shape rotation on top of all of that.
   var secondRot = generator.random()
@@ -63,14 +61,15 @@ function genShape(remainingColors, diameter, i, total, svg) {
 function genColor(colors) {
   var rand = generator.random()
   var idx = Math.floor(colors.length * generator.random())
-  var color = colors.splice(idx,1)[0]
+  var color = colors.splice(idx, 1)[0]
   return color
 }
 
 var wobble = 30
+
 function hueShift(colors, generator) {
   var amount = (generator.random() * 30) - (wobble / 2)
-  return colors.map(function(hex) {
+  return colors.map(function (hex) {
     var color = Color(hex)
     color.rotate(amount)
     return color.hexString()
